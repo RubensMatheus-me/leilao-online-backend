@@ -1,4 +1,4 @@
-package com.example.leilao.backend.backend;
+package com.example.leilao.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
