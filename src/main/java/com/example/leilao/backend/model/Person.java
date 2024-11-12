@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,7 @@ public class Person implements UserDetails {
     private String name;
 
     @Column(name = "email")
+    @UniqueElements
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -47,7 +49,8 @@ public class Person implements UserDetails {
 
     @Column(name = "validation_code")
     @JsonIgnore
-    private String validationCode;
+    @UniqueElements
+    private Integer validationCode;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "validation_code_validity")

@@ -3,6 +3,7 @@ package com.example.leilao.backend.controller;
 import com.example.leilao.backend.model.Person;
 import com.example.leilao.backend.model.PersonAuthDTO;
 import com.example.leilao.backend.repository.PersonRepository;
+import com.example.leilao.backend.request.PersonAuthRequestDTO;
 import com.example.leilao.backend.response.PersonAuthResponseDTO;
 import com.example.leilao.backend.security.JwtService;
 import com.example.leilao.backend.service.PersonService;
@@ -35,6 +36,10 @@ public class PersonController {
         return new PersonAuthResponseDTO(authRequest.getEmail(), jwtService.generateToken(authentication.getName()));
     }
 
+    @PostMapping("/forgot-password-request")
+    public String passwordCodeRequest(@RequestBody PersonAuthRequestDTO person) {
+        return personService.forgotPassword(person);
+    }
     @PostMapping
     public Person create(@Valid @RequestBody Person person) {
         return personService.create(person);
