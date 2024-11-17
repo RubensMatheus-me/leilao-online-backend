@@ -1,5 +1,6 @@
 package com.example.leilao.backend.service;
 
+import com.example.leilao.backend.dto.MailBody;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,32 +22,15 @@ public class EmailService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    /**
-     * Envia um email simples com o destinatário, assunto e texto fornecidos.
-     *
-     * @param to      o endereço de email do destinatário
-     * @param subject o assunto do email
-     * @param text    o conteúdo do email
-     */
-    public void sendSimpleEmail(String to, String subject, String text) {
+    public void sendSimpleEmail(MailBody mailBody) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
+        message.setTo(mailBody.to());
+        message.setFrom("");
+        message.setSubject(mailBody.subject());
+        message.setText(mailBody.text());
         mailSender.send(message);
     }
 
-    /**
-     * Envia um email usando um template com o destinatário, assunto, variáveis de
-     * email e nome do arquivo de template fornecidos.
-     *
-     * @param to               o endereço de email do destinatário
-     * @param subject          o assunto do email
-     * @param emailVariables   as variáveis de email a serem usadas no template -
-     *                         org.thymeleaf.context.Context
-     * @param templateFileName o nome do arquivo html de template
-     * @throws MessagingException se ocorrer um erro ao enviar o email
-     */
     public void sendTemplateEmail(String to, String subject, Context emailVariables, String templateFileName)
             throws MessagingException {
 

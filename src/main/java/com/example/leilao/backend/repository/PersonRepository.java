@@ -12,10 +12,16 @@ import java.util.Optional;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
     Optional<Person> findByEmail(String email);
+
     Optional<Person> findByEmailAndCode(String email, Integer code);
 
     @Modifying
     @Transactional
     @Query("UPDATE Person p SET p.password = ?2 WHERE p.email = ?1")
     void updatePassword(String email, String password);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Person p SET p.validationCode = NULL, p.validationCodeValidity = NULL WHERE p.email = ?1")
+    void clearValidationCode(String email);
 }
