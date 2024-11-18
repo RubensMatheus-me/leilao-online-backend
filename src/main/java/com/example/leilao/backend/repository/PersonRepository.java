@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface PersonRepository extends JpaRepository<Person, Long> {
     Optional<Person> findByEmail(String email);
 
-    Optional<Person> findByEmailAndCode(String email, Integer code);
+    Optional<Person> findByEmailAndValidationCode(String email, Integer validationCode);
 
     @Modifying
     @Transactional

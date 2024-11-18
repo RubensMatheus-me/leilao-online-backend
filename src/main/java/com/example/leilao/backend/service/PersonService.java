@@ -61,7 +61,7 @@ public class PersonService implements UserDetailsService {//inserir, alterar, de
     }
 
     public String validateCode(Integer code, PersonAuthRequestDTO personAuthRequestDTO) {
-        Optional<Person> person = personRepository.findByEmailAndCode(personAuthRequestDTO.getEmail(), code);
+        Optional<Person> person = personRepository.findByEmailAndValidationCode(personAuthRequestDTO.getEmail(), code);
         if(person.isPresent()) {
             Person personDatabase = person.get();
 
