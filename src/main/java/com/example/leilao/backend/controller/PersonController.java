@@ -3,11 +3,12 @@ package com.example.leilao.backend.controller;
 import com.example.leilao.backend.model.Person;
 import com.example.leilao.backend.model.PersonAuthDTO;
 import com.example.leilao.backend.repository.PersonRepository;
+import com.example.leilao.backend.request.ChangePasswordRequestDTO;
 import com.example.leilao.backend.request.PersonAuthRequestDTO;
 import com.example.leilao.backend.response.PersonAuthResponseDTO;
 import com.example.leilao.backend.security.JwtService;
 import com.example.leilao.backend.service.PersonService;
-import com.example.leilao.backend.utils.ChangePasswordHandler;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/person")
+@CrossOrigin
 public class PersonController {
     @Autowired
     private PersonService personService;
@@ -40,7 +42,7 @@ public class PersonController {
         return ResponseEntity.ok(new PersonAuthResponseDTO(authRequest.getEmail(), token));
     }
 
-    @PostMapping("/forgot-password-request")
+    @PostMapping("/forgot-password")
     public ResponseEntity<String> passwordCodeRequest(@RequestBody @Valid PersonAuthRequestDTO person) {
         String response = personService.forgotPassword(person);
         return ResponseEntity.ok(response);
@@ -58,9 +60,8 @@ public class PersonController {
 
     @PostMapping("/change-password")
     public ResponseEntity<String> changePasswordHandler(
-            @RequestBody @Valid ChangePasswordHandler changePassword,
-            @RequestBody @Valid PersonAuthRequestDTO email) {
-        String response = personService.changePassword(changePassword, email);
+            @RequestBody @Valid ChangePasswordRequestDTO changePassword) {
+        String response = personService.changePassword(changePassword);
         return response.equals("Usuário não encontrado.") || response.equals("As senhas não coincidem. Tente novamente!")
                 ? ResponseEntity.badRequest().body(response)
                 : ResponseEntity.ok(response);
