@@ -37,6 +37,14 @@ public class Person implements UserDetails {
     @UniqueElements
     private String email;
 
+    @Column(name = "ativo")
+    private Boolean active;
+    @UniqueElements
+    @Column(name = "register_code")
+    private String registerCode;
+    @Column(name = "register_code_validity")
+    private Date registerCodeValidity;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 

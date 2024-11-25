@@ -7,6 +7,7 @@ import com.example.leilao.backend.request.ChangePasswordRequestDTO;
 import com.example.leilao.backend.request.PersonAuthRequestDTO;
 import com.example.leilao.backend.response.PersonAuthResponseDTO;
 import com.example.leilao.backend.security.JwtService;
+import com.example.leilao.backend.service.AuthenticateService;
 import com.example.leilao.backend.service.PersonService;
 
 import jakarta.validation.Valid;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 public class PersonController {
     @Autowired
     private PersonService personService;
+    @Autowired
+    private AuthenticateService authenticateService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -34,12 +37,12 @@ public class PersonController {
 
     @PostMapping("/login")
     public ResponseEntity<PersonAuthResponseDTO> authenticateUser(@RequestBody @Valid PersonAuthDTO authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authRequest.getEmail(), authRequest.getPassword()));
+        String response = authenticateService.authenticate(authRequest, authenticationManager);
 
-        String token = jwtService.generateToken(authentication.getName());
-        return ResponseEntity.ok(new PersonAuthResponseDTO(authRequest.getEmail(), token));
+        if (response.startsWith("Conta não verificada")) {
+            return ResponseEntity.badRequest().body(new PersonAuthResponseDTO(authRequest.getEmail(), response));
+        }
+        return ResponseEntity.ok(new PersonAuthResponseDTO(authRequest.getEmail(), response));
     }
 
     @PostMapping("/forgot-password")
@@ -65,6 +68,14 @@ public class PersonController {
         return response.equals("Usuário não encontrado.") || response.equals("As senhas não coincidem. Tente novamente!")
                 ? ResponseEntity.badRequest().body(response)
                 : ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/activate")
+    public ResponseEntity<String> activateUser(@RequestParam String token) {
+        String response = personService.activateUser(token);
+        return response.equals("Usuário ativado com sucesso!")
+                ? ResponseEntity.ok(response)
+                : ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping

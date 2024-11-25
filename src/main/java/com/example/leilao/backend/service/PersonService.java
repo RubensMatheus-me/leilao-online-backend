@@ -2,11 +2,16 @@ package com.example.leilao.backend.service;
 
 import com.example.leilao.backend.dto.MailBodyDTO;
 import com.example.leilao.backend.model.Person;
+import com.example.leilao.backend.model.PersonAuthDTO;
 import com.example.leilao.backend.repository.PersonRepository;
 import com.example.leilao.backend.request.ChangePasswordRequestDTO;
 import com.example.leilao.backend.request.PersonAuthRequestDTO;
+import com.example.leilao.backend.security.JwtService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,11 +52,16 @@ public class PersonService implements UserDetailsService {//inserir, alterar, de
 
             MailBodyDTO mailBodyDTO = MailBodyDTO.builder()
                     .to(personDatabase.getEmail())
-                    .text("This is the OTP for your Forgot Password request: " + code)
+                    .text(String.valueOf(code))
                     .subject("OTP for Forgot Password request")
                     .build();
 
-            emailService.sendSimpleEmail(mailBodyDTO);
+            try {
+                emailService.sendTemplateEmail(mailBodyDTO);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                return "Erro ao enviar o e-mail de verificação.";
+            }
 
             return "Código de verificação enviado com sucesso.";
         } else {
@@ -100,21 +110,49 @@ public class PersonService implements UserDetailsService {//inserir, alterar, de
 
 
     public Person create(Person person) {
+        person.setActive(false);
+        person.setRegisterCode(UUID.randomUUID().toString());
+        person.setRegisterCodeValidity(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)); //24horas
+
         Person personSaved = personRepository.save(person);
-        Integer verificationCode = personSaved.getValidationCode();
 
         try {
-            emailService.sendTemplateEmail(
-                    personSaved.getEmail(),
-                    "Cadastro Efetuado com Sucesso",
-                    verificationCode
-            );
+            String activationLink = "http://localhost:8080/api/person/activate?token=" + personSaved.getRegisterCode();
+
+            MailBodyDTO mailBodyDTO = MailBodyDTO.builder()
+                    .to(personSaved.getEmail())
+                    .subject("Confirmação de Cadastro")
+                    .text(activationLink)
+                    .build();
+
+            emailService.sendTemplateVerifiedEmail(mailBodyDTO);
         } catch (MessagingException e) {
             e.printStackTrace();
+            throw new RuntimeException("Erro ao enviar o e-mail de ativação.");
         }
 
         return personSaved;
     }
+
+    public String activateUser(String token) {
+        Optional<Person> personOptional = personRepository.findByRegisterCode(token);
+        if (personOptional.isEmpty()) {
+            return "Token inválido ou expirado.";
+        }
+        Person person = personOptional.get();
+
+        if (person.getRegisterCodeValidity().before(Date.from(Instant.now()))) {
+            return "Token expirado. Solicite um novo registro.";
+        }
+
+        person.setActive(true);
+        person.setRegisterCode(null);
+        person.setRegisterCodeValidity(null);
+        personRepository.save(person);
+
+        return "Usuário ativado com sucesso!";
+    }
+
 
     public Person update(Person person) {
         Person personCreated = personRepository.findById(person.getId()).orElseThrow( () -> new NoSuchElementException("Objeto não encontrado"));

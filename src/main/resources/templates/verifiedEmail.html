@@ -12,9 +12,9 @@
 <div class="email-container" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd;">
     <div class="content" style="padding: 20px; text-align: center;">
         <p style="font-size: 20px; color: #333333; line-height: 1.8;">Olá,</p>
-        <p style="font-size: 20px; color: #333333; line-height: 1.8;">Você solicitou a recuperação da sua senha. Abaixo está o código para a troca de senha:</p>
+        <p style="font-size: 20px; color: #333333; line-height: 1.8;">Por favor, clique no botão abaixo para verificar sua conta:</p>
         <div class="otp-code" style="font-size: 20px; font-weight: bold; margin: 20px 0;">
-            <p style="font-size: 24px; color: #333333;">Código de verificação: <div style="font-weight: bold; color: #FF5722;"th:text="${verificationCode}"></div></p>
+            <a class = "url" style="text-decoration: none;" th:href="${link}">Verificar Conta</a>
         </div>
         <p style="font-size: 20px; color: #333333; line-height: 1.8;">Se você não solicitou esta ação, por favor ignore este e-mail.</p>
     </div>

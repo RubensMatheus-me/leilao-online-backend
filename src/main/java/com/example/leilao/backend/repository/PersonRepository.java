@@ -15,6 +15,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Optional<Person> findByEmailAndValidationCode(String email, Integer validationCode);
 
+    Optional<Person> findByRegisterCode(String registerCode);
+
     @Modifying
     @Transactional
     @Query("UPDATE Person p SET p.password = ?2 WHERE p.email = ?1")

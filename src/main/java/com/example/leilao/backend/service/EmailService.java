@@ -1,6 +1,7 @@
 package com.example.leilao.backend.service;
 
 import com.example.leilao.backend.dto.MailBodyDTO;
+import com.example.leilao.backend.model.Person;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -32,12 +33,12 @@ public class EmailService {
         message.setText(mailBodyDTO.text());
         mailSender.send(message);
     }
-
-    public void sendTemplateEmail(String to, String subject, Integer verificationCode)
+    @Async
+    public void sendTemplateEmail(MailBodyDTO mailBodyDTO )
             throws MessagingException {
 
         Context context = new Context();
-        context.setVariable("verificationCode", verificationCode);
+        context.setVariable("verificationCode", mailBodyDTO.text());
 
         String processedTemplate = templateEngine.process("index", context);
 
@@ -45,8 +46,27 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setTo(to);
-        helper.setSubject(subject);
+        helper.setTo(mailBodyDTO.to());
+        helper.setSubject(mailBodyDTO.subject());
+        helper.setText(processedTemplate, true);
+
+        mailSender.send(message);
+    }
+    @Async
+    public void sendTemplateVerifiedEmail(MailBodyDTO mailBodyDTO )
+            throws MessagingException {
+
+        Context context = new Context();
+        context.setVariable("link", mailBodyDTO.text());
+
+        String processedTemplate = templateEngine.process("verifiedEmail", context);
+
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(mailBodyDTO.to());
+        helper.setSubject(mailBodyDTO.subject());
         helper.setText(processedTemplate, true);
 
         mailSender.send(message);
