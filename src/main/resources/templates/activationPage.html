@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ativação de Conta</title>
+  <style>
+    .message {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .success {
+      color: #28a745; /* Verde */
+    }
+    .error {
+      color: #dc3545; /* Vermelho */
+    }
+  </style>
+</head>
+
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+
+<div class="email-container" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd;">
+  <div class="content" style="padding: 20px; text-align: center;">
+    <p style="font-size: 20px; color: #333333; line-height: 1.8;">Olá,</p>
+    <div class="otp-code message"
+         th:classappend="${message == 'Usuário ativado com sucesso!' ? 'success' : 'error'}"
+         th:text="${message}">
+      <!-- A mensagem será exibida aqui -->
+    </div>
+    <p style="font-size: 20px; color: #333333; line-height: 1.8;">Se você não solicitou esta ação, por favor ignore este e-mail.</p>
+  </div>
+  <div class="footer" style="background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 14px; color: #777777;">
+    <p>&copy; 2024 The Rapazes. Todos os direitos reservados.</p>
+  </div>
+</div>
+
+</body>
+
+</html>

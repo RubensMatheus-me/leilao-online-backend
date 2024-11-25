@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/api/person")
@@ -71,11 +72,13 @@ public class PersonController {
     }
 
     @GetMapping("/activate")
-    public ResponseEntity<String> activateUser(@RequestParam String token) {
+    public ModelAndView activateUser(@RequestParam String token) {
         String response = personService.activateUser(token);
-        return response.equals("Usuário ativado com sucesso!")
-                ? ResponseEntity.ok(response)
-                : ResponseEntity.badRequest().body(response);
+
+        ModelAndView modelAndView = new ModelAndView("activationPage");
+        modelAndView.addObject("message", response);
+        return modelAndView;
+
     }
 
     @PostMapping
