@@ -19,9 +19,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+@CrossOrigin(originPatterns = "*")
 @RestController
 @RequestMapping("/api/person")
-@CrossOrigin
 public class PersonController {
     @Autowired
     private PersonService personService;
