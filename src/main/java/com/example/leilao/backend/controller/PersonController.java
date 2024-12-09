@@ -2,7 +2,6 @@ package com.example.leilao.backend.controller;
 
 import com.example.leilao.backend.model.Person;
 import com.example.leilao.backend.model.PersonAuthDTO;
-import com.example.leilao.backend.repository.PersonRepository;
 import com.example.leilao.backend.request.ChangePasswordRequestDTO;
 import com.example.leilao.backend.request.PersonAuthRequestDTO;
 import com.example.leilao.backend.response.PersonAuthResponseDTO;
@@ -14,8 +13,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,11 +27,6 @@ public class PersonController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtService jwtService;
-
-
 
     @PostMapping("/login")
     public ResponseEntity<PersonAuthResponseDTO> authenticateUser(@RequestBody @Valid PersonAuthDTO authRequest) {
