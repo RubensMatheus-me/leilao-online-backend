@@ -29,7 +29,7 @@ public class PersonController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<PersonAuthResponseDTO> authenticateUser(@RequestBody @Valid PersonAuthDTO authRequest) {
+    public ResponseEntity<PersonAuthResponseDTO> authenticateUser(@RequestBody PersonAuthDTO authRequest) {
         String response = authenticateService.authenticate(authRequest, authenticationManager);
 
         if (response.startsWith("Conta não verificada")) {

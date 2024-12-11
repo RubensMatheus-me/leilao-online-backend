@@ -164,4 +164,9 @@ public class PersonService implements UserDetailsService {//inserir, alterar, de
         return personRepository.save(personCreated);
     }
 
+    public Person findByEmail(String email) {
+        return personRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
+
 }

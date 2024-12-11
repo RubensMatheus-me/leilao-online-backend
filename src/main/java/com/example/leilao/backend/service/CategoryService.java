@@ -1,6 +1,7 @@
 package com.example.leilao.backend.service;
 
 import com.example.leilao.backend.model.Category;
+import com.example.leilao.backend.model.Person;
 import com.example.leilao.backend.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,11 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    public Category findById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+    }
 
     public Category create(Category category) {
         return categoryRepository.save(category);
@@ -31,5 +37,9 @@ public class CategoryService {
 
     public List<Category> listAll() {
         return categoryRepository.findAll();
+    }
+
+    public List<Category> getCategoriesByPerson(Person person) {
+        return categoryRepository.findByPerson(person);
     }
 }
