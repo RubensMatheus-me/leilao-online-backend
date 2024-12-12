@@ -24,12 +24,9 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Category create(@RequestBody Category category, Principal principal) {
-        Person person = personService.findByEmail(principal.getName());
-        category.setPerson(person);
+    public Category create(@RequestBody Category category) {
         return categoryService.create(category);
     }
-
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")

@@ -63,8 +63,9 @@ public class Person implements UserDetails {
     @Column(name = "validation_code_validity")
     private Date validationCodeValidity;
 
-    @OneToMany(mappedBy = "person", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Setter(value = AccessLevel.NONE)
+    @JsonIgnore
     private List<PersonProfile> personProfile;
 
 

@@ -18,11 +18,12 @@ public class Auction {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private String status;
+    private String imageUrl;
     private String observation;
     private Double incrementValue;
     private Double valueBid;
     private String emailUserBid;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
     @ManyToOne

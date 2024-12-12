@@ -8,6 +8,7 @@ import com.example.leilao.backend.request.ChangePasswordRequestDTO;
 import com.example.leilao.backend.request.PersonAuthRequestDTO;
 import com.example.leilao.backend.security.JwtService;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +35,12 @@ public class PersonService implements UserDetailsService {//inserir, alterar, de
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return personRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Transactional
+    public Person getPersonWithAuthorities(Long id) {
+        Person person = personRepository.findById(id).orElseThrow(() -> new RuntimeException("Person not found"));
+        return person;
     }
 
     private Integer codeGenerator() {
@@ -110,7 +117,7 @@ public class PersonService implements UserDetailsService {//inserir, alterar, de
         }
     }
 
-
+    @Transactional
     public Person create(Person person) {
         person.setActive(false);
         person.setRegisterCode(UUID.randomUUID().toString());

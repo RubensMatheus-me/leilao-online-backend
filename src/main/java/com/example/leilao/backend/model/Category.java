@@ -15,7 +15,7 @@ public class Category {
     private String name;
     @Column(name = "observation")
     private String observation;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
-    Person person;
+    private Person person;
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class AuctionService {
@@ -17,12 +18,17 @@ public class AuctionService {
     private AuctionRepository auctionRepository;
 
     @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
     private AuthPersonProvider authPersonProvider;
 
     public Auction create(Auction auction) {
         auction.setPerson(authPersonProvider.getAuthenticatedUser());
+
         return auctionRepository.save(auction);
     }
+
 
     public Auction update(Auction auction) {
         Auction auctionSaved = auctionRepository.findById(auction.getId()).orElseThrow(() -> new NoSuchElementException("Leilão não encontrado"));
@@ -54,13 +60,8 @@ public class AuctionService {
         return auctionRepository.findAll();
     }
 
-    public Auction findById(Long id) {
-        Person authenticatedUser = authPersonProvider.getAuthenticatedUser();
-        Auction auction = auctionRepository.findByIdAndPerson(id, authenticatedUser);
-
-        if(auction == null) {
-            throw new NoSuchElementException("Leilão não encontrado ou não percente ao usuário autenticado");
-        }
+    public Optional<Auction> findById(Long id) {
+        Optional<Auction> auction = auctionRepository.findById(id);
         return auction;
     }
 }
